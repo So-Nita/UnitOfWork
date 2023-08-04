@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProductStock.EntityConfiguration;
+using ProductStock.Interface;
 
 namespace ProductStock.Repository
 {
@@ -14,7 +15,11 @@ namespace ProductStock.Repository
         {
             return _context.Set<TE>().AsQueryable();
         }
-         
+
+        public IEnumerable<TE> GetAll()
+        {
+            return _context.Set<TE>().AsEnumerable();
+        }
         public TE? GetById(string id)
         {
             return _context.Set<TE>().Find(id);
@@ -23,49 +28,39 @@ namespace ProductStock.Repository
         
         public void Add(TE entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task AddAsync(TE entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(TE entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TE> DeleteAsync(TE entity)
-        {
-            throw new NotImplementedException();
-        }
-
-       
-
-        public async Task<TE> GetByIdAsync(string id)
-        {
-            throw new NotImplementedException();
+            _context.Set<TE>().Add(entity); 
         }
 
         public void Update(TE entity)
         {
-            throw new NotImplementedException();
+            _context.Set<TE>().Update(entity);
         }
 
-        public Task<TE> UpdateAsync(TE entity)
+        public void Delete(TE entity)
         {
-            throw new NotImplementedException();
+            _context.Set<TE>().Remove(entity);
         }
 
-
-        /*public async Task<IQueryable<TE?>> GetAllAsync()
+        public async Task<TE?> GetByIdAsync(string id)
         {
-            return  _context.Set<TE>().AsQueryable();
-        }*/
+            return await Task.Run(() => GetById(id));
+        }
         public async Task<IEnumerable<TE?>> GetAllAsync()
         {
-            return await _context.Set<TE>().ToListAsync();
+            return await Task.Run(() => GetAll());
+        }
+        public async Task AddAsync(TE entity)
+        {
+            await Task.Run(() => Add(entity));
+        }
+        public async Task UpdateAsync(TE entity)
+        {
+            await Task.Run(() => Update(entity));
+        }
+
+        public async Task DeleteAsync(TE entity)
+        {
+            await Task.Run(() => Delete(entity));
         }
 
     }
